@@ -1,0 +1,40 @@
+% # iAMPA_CH12:
+%
+% Normalized synaptic AMPAergic excitatory current for different
+% connections of (Ching et al., 2012). The conductances of the
+% different connections are set in the specification assembly
+% function.
+%
+% - References:
+%     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
+%     neurophysiological-metabolic model for burst suppression. Proceedings of
+%     the National Academy of Sciences. 2012;109: 3095–3100.
+%     doi:10.1073/pnas.1121461109
+%
+% Author: Austin Soplata
+% Copyright (C) 2018 Austin Soplata, Boston University, USA
+% Tags: synapse, connection, excitation, ampa
+% --------------------------------------------------------------------
+% Parameters
+gAMPA = 0.1  % mS/cm2, maximal conductance
+EAMPA = 0    % mV, reversal potential
+tauAMPA = 2  % ms, decay time constant
+tauAMPAr = 1 % ms, rise time constant
+IC = 0.0
+IC_noise = 0
+
+% Connectivity
+netcon = ones(N_pre,N_post) % default connectivity matrix (all-to-all)
+
+% Functions
+iAMPA_CH12(X,s) = -gAMPA.*(s*netcon).*(X-EAMPA)
+
+monitor functions % always record the synaptic current
+
+% ODEs and ICs
+s' = 5.*(1+tanh(X_pre./4)).*(1-s)./tauAMPAr - s./tauAMPA
+s(0) = IC+IC_noise.*rand(1,N_pre)
+
+% Linkers
+@current += iAMPA_CH12(X_post,s)
+

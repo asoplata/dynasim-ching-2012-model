@@ -1,0 +1,40 @@
+% # iNa_CH12:
+%
+% Fast sodium current, for generic cortical cells used in the DynaSim
+% implementation of (Ching et al., 2012).
+%
+% - References:
+%     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
+%     neurophysiological-metabolic model for burst suppression. Proceedings of
+%     the National Academy of Sciences. 2012;109: 3095–3100.
+%     doi:10.1073/pnas.1121461109
+%
+% Author: Austin Soplata
+% Copyright (C) 2018 Austin Soplata, Boston University, USA
+% Tags: sodium, current, intrinsic, pyramidal, soma
+% --------------------------------------------------------------------
+% Parameters
+gNa = 100 % mS/cm^2
+ENa = 50  % mV
+
+mNaIC = 0.05
+mNaNoiseIC = 0.1
+hNaIC = 0.54
+hNaNoiseIC = 0.1
+
+% Functions
+iNa_CH12(X,mNa,hNa) = -gNa.*mNa.^3.*hNa.*(X-ENa)
+
+% ODEs and ICs
+mNa' = 0.32.*(X+54)./(1-exp(-(X+54)./4)).*(1-mNa) - 0.28*(X+27)./(exp((X+27)./5)-1).*mNa
+mNa(0)=mNaIC+mNaNoiseIC.*rand(1, Npop)
+% m(0) = .03247+IC_noise.*rand(1,Npop)
+
+hNa' = 0.128.*exp(-(X+50)./18).*(1-hNa) - 4./(1+exp(-(X+27)./5)).*hNa
+% h(0) = .988805+IC_noise.*rand(1,Npop)
+hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
+
+% Linkers
+@current += iNa_CH12(X,mNa,hNa)
+
+

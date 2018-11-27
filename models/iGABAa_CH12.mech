@@ -1,0 +1,39 @@
+% # iGABAa_CH12:
+%
+% Normalized synaptic GABAergic inhibitory current for different
+% connections of (Ching et al., 2012). The conductances of the
+% different connections are set in the specification assembly
+% function.
+%
+% - References:
+%     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
+%     neurophysiological-metabolic model for burst suppression. Proceedings of
+%     the National Academy of Sciences. 2012;109: 3095–3100.
+%     doi:10.1073/pnas.1121461109
+%
+% Author: Austin Soplata
+% Copyright (C) 2018 Austin Soplata, Boston University, USA
+% Tags: synapse, connection, inhibition, gabaa
+% --------------------------------------------------------------------
+% Parameters
+gGABAa = 0.25 % mS/cm2, maximal conductance
+EGABAa = -85  % mV, reversal potential
+tauGABAa = 5  % ms, decay time constant
+tauGABAar = 1 % ms, rise time constant
+IC = 0.0
+IC_noise = 0
+
+% Connectivity
+netcon = ones(N_pre,N_post) % default connectivity matrix (all-to-all)
+
+% Functions
+iGABAa_CH12(X,s) = -gGABAa.*(s*netcon).*(X-EGABAa)
+
+monitor functions % always record the synaptic current
+
+% ODEs and ICs
+s' = 2.*(1+tanh(X_pre./4)).*(1-s)./tauGABAar - s./tauGABAa
+s(0) = IC+IC_noise.*rand(1,N_pre)
+
+% Linkers
+@current += iGABAa_CH12(X_post,s)

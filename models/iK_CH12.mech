@@ -1,0 +1,30 @@
+% # iK_CH12:
+%
+% Fast delayed rectifier potassium current, for generic cortical cells used in
+% the DynaSim implementation of (Ching et al., 2012).
+%
+% - References:
+%     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
+%     neurophysiological-metabolic model for burst suppression. Proceedings of
+%     the National Academy of Sciences. 2012;109: 3095–3100.
+%     doi:10.1073/pnas.1121461109
+%
+% Author: Austin Soplata
+% Copyright (C) 2018 Austin Soplata, Boston University, USA
+% Tags: potassium, current, intrinsic
+% --------------------------------------------------------------------
+% Parameters
+gK = 80
+EK = -100
+nKIC = 0.34
+nKNoiseIC = 0.1
+
+% Functions
+iK_CH12(X,nK) = -gK.*nK.^4.*(X-EK)
+
+% ODEs and ICs
+nK' = 0.032.*(X+52)./(1-exp(-(X+52)./5)).*(1-nK) - 0.5*exp(-(X+57)./40).*nK
+nK(0)=nKIC+nKNoiseIC.*rand(1,Npop)
+
+% Linkers
+@current += iK_CH12(X,nK)

@@ -1,0 +1,25 @@
+% # iLeak_CH12:
+%
+% Chloride/general Leak current, Hodgkin-Huxley-style, for generic cortical
+% cells used in the DynaSim implementation of (Ching et al., 2012).
+%
+% - References:
+%     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
+%     neurophysiological-metabolic model for burst suppression. Proceedings of
+%     the National Academy of Sciences. 2012;109: 3095–3100.
+%     doi:10.1073/pnas.1121461109
+%
+% Author: Austin Soplata
+% Copyright (C) 2018 Austin Soplata, Boston University, USA
+% Tags: potassium, leak, current, intrinsic, pyramidal, soma
+% --------------------------------------------------------------------
+% Parameters
+gLeak = 0.1
+ELeak = -67
+
+% Functions
+iLeak_CH12(X) = -gLeak.*(X-ELeak)
+
+% Linkers
+@current += iLeak_CH12(X)
+
