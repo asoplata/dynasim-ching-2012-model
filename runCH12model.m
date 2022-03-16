@@ -42,7 +42,7 @@ Copyright (C) 2018 Austin E. Soplata, Boston University, USA
 % new folder in the current directory that has the SAME NAME as this file:
 study_dir = mfilename;
 % If you're on a cluster and instead want to save the simulation results to a
-% folder in a different location, use the commented-out line below instead:
+% folder in a different location, use the commented-out line below instead:com
 % study_dir = strcat('/projectnb/$PROJECT/$USERNAME/p25-anesthesia-grant-sim-data/', mfilename);
 
 % Debug: If you want to completely clean the environment, close all figures,
@@ -73,6 +73,13 @@ numCellsScaleFactor = 1;
 % examples/instructions.
 vary={
     'PY','appliedStim',1.8;
+    % Since the original paper (and supplement) did not specify what value it
+    % used for gKATP, I'm just guessing here. If you want to run this model,
+    % email the author to ask him what the conductance value should be!
+    'PY','gKATP', 0.25;
+    'PY','JATP', 0.25;
+    'PY','concATPIC', 1.25;
+    'PY','concNaIC', 1.0;
     'FS','appliedStim',0.5;
 };
 
@@ -86,7 +93,7 @@ simulator_options={
     'downsample_factor', 10,... % How much to downsample data, proportionally {integer}
     'dsPlot2_no_spikes', 1,...% TODO
     'dt', 0.01,...              % Fixed time step, in milliseconds
-    'memory_limit', '8G',...    % Memory limit for use on cluster
+    'memory_limit', '16G',...    % Memory limit for use on cluster
     'mex_flag', 0,...% TODO
     'num_cores', 1,...          % Number of CPU cores to use, including on cluster
     'overwrite_flag', 1,...     % Whether to overwrite simulation raw data, 0 or 1

@@ -1,7 +1,7 @@
-% # iNa_CH12:
+% # iKATP_CH12:
 %
-% Fast sodium current, for generic cortical cells used in the DynaSim
-% implementation of (Ching et al., 2012).
+% Metabolic potassium current, for excitatory cortical cells used in the
+% DynaSim implementation of (Ching et al., 2012).
 %
 % - References:
 %     - Ching S, Purdon PL, Vijayan S, Kopell NJ, Brown EN. A
@@ -11,30 +11,36 @@
 %
 % Author: Austin Soplata
 % Copyright (C) 2018 Austin Soplata, Boston University, USA
-% Tags: sodium, current, intrinsic, pyramidal, soma
+% Tags: metablic, potassium, current, intrinsic, pyramidal, soma
 % --------------------------------------------------------------------
 % Parameters
-gNa = 100 % mS/cm^2
-ENa = 50  % mV
+% conductance is from Beverley's code, since the actual value isn't stated in
+% the paper!
+gKATP = 0.15 % mS/cm^2
+EK = -100  % mV
+F = 8.8e-5
+Km = 6e-8
+JATP = 2
+% value for ATPmax was also not given in paper, instead got it from beverley,
+% but she wasn't sure
+ATPmax = 1.5
 
-mNaIC = 0.05
-mNaNoiseIC = 0.1
-hNaIC = 0.54
-hNaNoiseIC = 0.1
+concATPIC = 0
+concATPNoiseIC = 0
+concNaIC = 0
+concNaNoiseIC = 0
 
 % Functions
-iNa_CH12(X,mNa,hNa) = -gNa.*mNa.^3.*hNa.*(X-ENa)
+iKATP_CH12(X,concATP) = -gKATP.*(1./(1 + 10.*concATP)).*(X-EK)
 
 % ODEs and ICs
-mNa' = 0.32.*(X+54)./(1-exp(-(X+54)./4)).*(1-mNa) - 0.28*(X+27)./(exp((X+27)./5)-1).*mNa
-mNa(0)=mNaIC+mNaNoiseIC.*rand(1, Npop)
-% m(0) = .03247+IC_noise.*rand(1,Npop)
+concNa' =  F.*@iNa_CH12 - 3.*Km.*concNa.^3 .*concATP
+concNa(0) = concNaIC + concNaNoiseIC.*rand(1,Npop)
 
-hNa' = 0.128.*exp(-(X+50)./18).*(1-hNa) - 4./(1+exp(-(X+27)./5)).*hNa
-% h(0) = .988805+IC_noise.*rand(1,Npop)
-hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
+concATP' = JATP.*(ATPmax - concATP) - Km.*concNa.^3 .*concATP
+concATP(0) = concATPIC + concATPNoiseIC.*rand(1,Npop)
 
 % Linkers
-@current += iNa_CH12(X,mNa,hNa)
+@current += iKATP_CH12(X,concATP)
 
 

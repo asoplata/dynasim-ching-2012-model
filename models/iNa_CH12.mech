@@ -14,6 +14,7 @@
 % Tags: sodium, current, intrinsic, pyramidal, soma
 % --------------------------------------------------------------------
 % Parameters
+% there's a typo in the supplemental information for the paper; these are backwards
 gNa = 100 % mS/cm^2
 ENa = 50  % mV
 
@@ -36,5 +37,4 @@ hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
 
 % Linkers
 @current += iNa_CH12(X,mNa,hNa)
-
-
+@iNa_CH12 += -iNa_CH12(X,mNa,hNa)

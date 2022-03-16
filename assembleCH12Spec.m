@@ -33,7 +33,7 @@ eqns={
   'dv/dt=(@current)/Cm'
   'Cm = 1'    % uF/cm^2
   'spike_threshold = -25'
-  'monitor v.spikes(spike_threshold, 1)'
+  'monitor v.spikes(spike_threshold)'
   'vIC = -68'    % mV
   'vNoiseIC = 50' % mV
   'v(0) = vIC+vNoiseIC*rand(1,Npop)'
@@ -47,6 +47,8 @@ gii=1.0; % FS->FS, GABAa synaptic maximal conductance in mS/cm^2
 gee=0.1;   % PY->FS, AMPA synaptic maximal conductance in mS/cm^2
 
 %% Specification object creation
+% M-current isn't used in this model? not sure why it was here
+%     'iM_CH12',...
 specification=[];
 specification.populations(1).name='PY';
 specification.populations(1).size=round(numCellsScale*10);
@@ -55,8 +57,8 @@ specification.populations(1).mechanism_list={...
     'iAppliedCurrent',...
     'iNa_CH12',...
     'iK_CH12',...
-    'iM_CH12',...
     'iLeak_CH12',...
+    'iKATP_CH12',...
     };
 
 specification.populations(2).name='FS';

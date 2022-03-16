@@ -15,6 +15,7 @@
 % --------------------------------------------------------------------
 % Parameters
 gLeak = 0.1
+% below is a typo in the supplemental information
 ELeak = -67
 
 % Functions
